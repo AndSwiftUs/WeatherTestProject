@@ -8,14 +8,34 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State private var searchText = ""
+    @State private var cities = defaultCities
+        
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-        }
-        .padding()
+        ZStack {
+            NavigationStack {
+                List(cities.sorted(), id: \.self) { city in
+                    ZStack(alignment: .leading) {
+                        NavigationLink(destination: CityDetailView(city: city)) { EmptyView() }.opacity(0)
+                        CityListView(city: city)
+                    } //end of ZStack
+                    .listRowSeparator(.hidden)
+                    .padding(.bottom)
+                } // end of List
+                .listStyle(.plain)
+                .navigationTitle("Weather")
+                .searchable(text: $searchText, prompt: "City name")
+                .onChange(of: searchText) { searchText in
+                    if !searchText.isEmpty {
+                        cities = defaultCities.filter { String($0).contains(searchText) }
+                    } else {
+                        cities = defaultCities
+                    }
+                }
+            }
+        } // end of ZStack
+        .preferredColorScheme(.dark)
     }
 }
 
