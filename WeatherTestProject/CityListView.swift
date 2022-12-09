@@ -35,7 +35,7 @@ struct CityListView: View {
                 .font(.title)
                 .frame(width: 58)
         }
-        .onAppear {
+        .task {
             Task {
                 time = try await vmTime.whatTimeInCity(name: city)
                 (temperature, picture) = try await vmOWM.weatherTemperaturePicture(name: city)
