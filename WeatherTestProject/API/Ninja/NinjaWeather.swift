@@ -80,7 +80,7 @@ class NinjaWeatherAPI: ObservableObject{
     
     func whatWeatherInCity(name: String) async throws -> (Int, String) {
         
-        return (91, "-1")
+//        return (91, "-1")
         
         var picture = 0
         var temperature = "unknown"

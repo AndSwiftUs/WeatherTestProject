@@ -81,7 +81,7 @@ class NinjaWorldTimeAPI: ObservableObject {
     
     func whatTimeInCity(name: String) async throws -> String {
         
-        return "12:20"
+//        return "12:20"
         
         var time = "unknown"
         

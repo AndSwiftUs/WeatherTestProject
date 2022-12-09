@@ -46,12 +46,12 @@ struct CityDetailView: View {
             HStack {
                 VStack {
                     Text("SUNRISE")
-                    Text("\(sunRise)")
+                    Text(dtToHour(dt: sunRise, format: "HH:MM"))
                         .font(.title)
                 }
                 VStack {
                     Text("SUNSET")
-                    Text("\(sunSet)")
+                    Text(dtToHour(dt: sunSet, format: "HH:MM"))
                         .font(.title)
                 }
             }

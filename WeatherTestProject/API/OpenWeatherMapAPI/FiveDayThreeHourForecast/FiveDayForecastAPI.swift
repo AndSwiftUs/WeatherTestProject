@@ -57,7 +57,7 @@ class FiveDayForecastAPI: ObservableObject {
             let jsonData = try JSONDecoder().decode(FiveDayForecastModel.self, from: data)
             
             print(#function, "jsonData", jsonData)
-            
+                        
             self.buffer = jsonData.buff!
             
         } catch {

@@ -34,7 +34,7 @@ class CurrentWeatherDataAPI: ObservableObject {
     func weatherTemperaturePictureTimeZone(name: String) async throws -> (Int, String, String) {
  
         // for develop and debug
-        return (-10, "10n", "20:20")
+//        return (-10, "10n", "20:20")
         
         let queryItems = [
             URLQueryItem(name: "q", value: name),

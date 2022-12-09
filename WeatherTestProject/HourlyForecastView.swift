@@ -9,25 +9,25 @@ import SwiftUI
 
 struct TimeView: View {
     
-    var time: Int
+    var time: Int?
     var icon: String
     var degree: Double
     
-    private func dtToHour(dt: Int) -> String {
-        let day = Date(timeIntervalSince1970: TimeInterval(dt))
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm"
-        return dateFormatter.string(from: day)
-    }
-    
     var body: some View {
         
-        VStack {
-            Text(dtToHour(dt: time))
+        VStack(spacing: 10) {
+            if time != nil {
+                Text(dtToHour(dt: time!, format: "HHa")).font(.caption)
+            } else {
+                Text("Now").font(.caption)
+            }
+            
             // пока для разработки просто картинка, чтобы не нагружать API
-//                        AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png"))
-            Image("10n")
-            Text("\(lround(degree))º")
+            AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png"))
+                .scaledToFit()
+                .frame(width: 40, height: 40)
+            //            Image("10n")
+            Text("\(lround(degree))º").font(.title)
         }
     }
 }
@@ -37,28 +37,17 @@ struct HourlyForecastView: View {
     var city: String
     
     @StateObject private var vmOWM = FiveDayForecastAPI()
-    @State private var code = "!"
-    
-    @ViewBuilder
-    var NowView: some View {
-        Text("\(code)")
-            .font(.largeTitle)
-    }
     
     var body: some View {
         
         ScrollView(.horizontal) {
             
             LazyHStack(spacing: 20) {
-                
-                Section(header: NowView) {
-                    
-                    ForEach(vmOWM.buffer) { item in
-                        TimeView(time: item.dt!,
-                                 icon: (item.weather?.first?.icon)!,
-                                 degree: (item.main?.temp)!
-                        )
-                    }
+                ForEach(vmOWM.buffer.prefix(24)) { item in
+                    TimeView(time: item.dt,
+                             icon: (item.weather?.first?.icon)!,
+                             degree: (item.main?.temp)!
+                    )
                 }
             }
         }
@@ -66,6 +55,7 @@ struct HourlyForecastView: View {
         .task {
             Task {
                 try await self.vmOWM.reload(name: city)
+                self.vmOWM.buffer[0].dt = nil // nil == "Now"
             }
         }
     }

@@ -28,9 +28,9 @@ struct CityListView: View {
             Spacer()
 
 // пока для разработки просто картинка, чтобы не нагружать API
-//            AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(picture)@2x.png"))
-            Image("10n")
-                .frame(width: 40, height: 40)
+            AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(picture)@2x.png"))
+//            Image("10n")
+//                .frame(width: 40, height: 40)
             
             Spacer().frame(width: 30)
             Text("\(temperature)º")
