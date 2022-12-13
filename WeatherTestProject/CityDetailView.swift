@@ -11,6 +11,8 @@ struct CityDetailView: View {
     
     var city: String
     
+    @Environment(\.presentationMode) var presentationMode
+    
     @ObservedObject private var vmOWM = CurrentWeatherDataAPI()
     @State private var currentWeater = CurrentWeatherModel()
     
@@ -28,60 +30,96 @@ struct CityDetailView: View {
     @ViewBuilder
     var CityDetailHeaderView: some View {
         
-        Text("\(city)").font(.title)
-        Text("\(temperature)º").font(.largeTitle)
-        Text("\(weatherDescription)")
-        
-        HStack {
-            Text("H: \(hTemperature)")
-            Text("L: \(lTemperature)")
+        VStack {
+            Text("\(temperature)º")
+                .font(.system(size: 96, weight: .thin))
+            Text("\(weatherDescription)")
+                .font(.system(size: 20, weight: .medium))
+            
+            HStack(alignment: .top) {
+                Text("H: \(hTemperature) ")
+                Text("L: \(lTemperature)")
+            }
+            .font(.system(size: 20, weight: .regular))
         }
     }
     
     @ViewBuilder
     var WeatherConditionView: some View {
         VStack {
+            
             Text("Здесь должно быть длинное описание погоды")
-            Divider()
-            HStack {
-                VStack {
-                    Text("SUNRISE")
-                    Text(dtToHour(dt: sunRise, format: "HH:MM"))
-                        .font(.title)
+                .font(.system(size: 17, weight: .regular))
+            
+            LazyVGrid(columns: [GridItem(), GridItem()], alignment: .leading, spacing: 8) {
+                
+                Section(header: ExDivider().padding(.horizontal) ) {
+                    VStack {
+                        Text("SUNRISE")
+                            .font(.system(size: 13, weight: .regular))
+                            .opacity(0.5)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(dtToHour(dt: sunRise, format: "HH:MM"))
+                            .font(.system(size: 28, weight: .regular))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.leading, 20)
+                    
+                    VStack {
+                        Text("SUNSET")
+                            .font(.system(size: 13, weight: .regular))
+                            .opacity(0.5)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(dtToHour(dt: sunSet, format: "HH:MM"))
+                            .font(.system(size: 28, weight: .regular))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
-                VStack {
-                    Text("SUNSET")
-                    Text(dtToHour(dt: sunSet, format: "HH:MM"))
-                        .font(.title)
+                
+                Section(header: ExDivider().padding(.horizontal) ) {
+                    VStack {
+                        Text("PRESSURE")
+                            .font(.system(size: 13, weight: .regular))
+                            .opacity(0.5)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("\(pressure)")
+                            .font(.system(size: 28, weight: .regular))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.leading, 20)
+                    
+                    VStack {
+                        Text("HUMIDITY")
+                            .font(.system(size: 13, weight: .regular))
+                            .opacity(0.5)
+                        Text("\(humidity)%")
+                            .font(.system(size: 28, weight: .regular))
+                    }
+                }
+                
+                Section(header: ExDivider().padding(.horizontal) ) {
+                    VStack {
+                        Text("WIND")
+                            .font(.system(size: 13, weight: .regular))
+                            .opacity(0.5)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("\(wind) km/h")
+                            .font(.system(size: 28, weight: .regular))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.leading, 20)
+                    
+                    VStack {
+                        Text("FEEL LIKE")
+                            .font(.system(size: 13, weight: .regular))
+                            .opacity(0.5)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("\(feelLike)º")
+                            .font(.system(size: 28, weight: .regular))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
             }
-            Divider()
-            HStack {
-                VStack {
-                    Text("PRESSURE")
-                    Text("\(pressure)")
-                        .font(.title)
-                }
-                VStack {
-                    Text("HUMIDITY")
-                    Text("\(humidity)%")
-                        .font(.title)
-                }
-            }
-            Divider()
-            HStack {
-                VStack {
-                    Text("WIND")
-                    Text("\(wind) km/h")
-                        .font(.title)
-                }
-                VStack {
-                    Text("FEEL LIKE")
-                    Text("\(feelLike)º")
-                        .font(.title)
-                }
-            }
-            Divider()
         }
     }
     
@@ -92,22 +130,41 @@ struct CityDetailView: View {
             
             NavigationStack {
                 
-                ScrollView {
-                    LazyVGrid(columns: [GridItem()]) {
-                        CityDetailHeaderView
-                        Divider()
-                        HourlyForecastView(city: city)
-                        Divider()
-                        DailyForecastView(city: city)
-                        Divider()
-                        WeatherConditionView
+                HStack {
+                    Button {
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Image("IconBack-1a")
                     }
+                    Spacer()
+                }.padding()
+                
+                Text("\(city)")
+                    .font(.custom("SF Pro Display", fixedSize: 34))
+                
+                CityDetailHeaderView
+                
+                ScrollView(showsIndicators: false) {
+                    
+                    Spacer()
+                        .frame(minHeight: 96)
+                    
+                    ExDivider()
+                    
+                    HourlyForecastView(city: city)
+                    
+                    ExDivider()
+                    
+                    DailyForecastView(city: city)
+                    
+                    ExDivider()
+                    
+                    WeatherConditionView
                 }
-                //                .navigationTitle("")
-                //                .preferredColorScheme(.light)
+                .navigationBarHidden(true)
             }
         }
-        .onAppear {
+        .task {
             Task {
                 currentWeater = try await vmOWM.currentWeather(name: city)
                 temperature = lround((currentWeater.main?.temp)!)
@@ -125,7 +182,6 @@ struct CityDetailView: View {
     }
     
 }
-
 
 struct CityDetailView_Previews: PreviewProvider {
     static var previews: some View {

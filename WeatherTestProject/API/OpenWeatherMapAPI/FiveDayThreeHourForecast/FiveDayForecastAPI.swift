@@ -33,72 +33,54 @@ class FiveDayForecastAPI: ObservableObject {
         return request
     }
     
-    func reload(name: String) async throws {
+    func reloadFiveDayForecasBuffer(name: String) async throws {
         let queryItems = [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "units", value: "metric"),
             URLQueryItem(name: "appid", value: openWeatherMapAPIKey)
         ]
-                
-        guard let request = createRequest(queryItems) else { throw NetworkError.badURL }
         
-        print(#function, "request:", request)
+        guard let request = createRequest(queryItems) else { throw NetworkError.badURL }
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
-        print(#function, "data:" ,data)
+        debugPrint(#function, name, data)
         
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode else { throw NetworkError.noData }
         guard (200 ... 299) ~= statusCode else { throw NetworkError.noData }
         
-        print("Prepeare to decode!")
-        
         do {
             let jsonData = try JSONDecoder().decode(FiveDayForecastModel.self, from: data)
-            
-            print(#function, "jsonData", jsonData)
-                        
             self.buffer = jsonData.buff!
-            
         } catch {
             print(error)
             fatalError(error.localizedDescription)
         }
     }
     
-    func hourForecast(name: String) async throws -> FiveDayForecastModel {
-                
+    func fiveDay3HourForecats(name: String) async throws -> FiveDayForecastModel {
+        
         let queryItems = [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "units", value: "metric"),
             URLQueryItem(name: "appid", value: openWeatherMapAPIKey)
         ]
-                
-        guard let request = createRequest(queryItems) else { throw NetworkError.badURL }
         
-        print(#function, "request:", request)
+        guard let request = createRequest(queryItems) else { throw NetworkError.badURL }
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
-        print(#function, "data:" ,data)
+        print(#function, name ,data)
         
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode else { throw NetworkError.noData }
         guard (200 ... 299) ~= statusCode else { throw NetworkError.noData }
         
-        print("Prepeare to decode!")
-        
         do {
             let jsonData = try JSONDecoder().decode(FiveDayForecastModel.self, from: data)
-            
-            print(#function, "jsonData", jsonData)
-            
             return jsonData
-            
         } catch {
             print(error)
             fatalError(error.localizedDescription)
         }
-  
     }
-    
 }

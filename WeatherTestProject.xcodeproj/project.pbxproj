@@ -136,8 +136,8 @@
 		DCB699872942694B00F7E257 /* CurrentWeatherData */ = {
 			isa = PBXGroup;
 			children = (
-				DC66A685294113FF00B8F1D6 /* CurrentWeatherDataAPI.swift */,
 				DC51C8792942160500ECFF6C /* CurrentWeatherModel.swift */,
+				DC66A685294113FF00B8F1D6 /* CurrentWeatherDataAPI.swift */,
 			);
 			path = CurrentWeatherData;
 			sourceTree = "<group>";
@@ -145,8 +145,8 @@
 		DCB6998829427C5F00F7E257 /* FiveDayThreeHourForecast */ = {
 			isa = PBXGroup;
 			children = (
-				DCB6999B2942810300F7E257 /* FiveDayForecastAPI.swift */,
 				DCB6998C29427CC200F7E257 /* FiveDayForecastModel.swift */,
+				DCB6999B2942810300F7E257 /* FiveDayForecastAPI.swift */,
 			);
 			path = FiveDayThreeHourForecast;
 			sourceTree = "<group>";

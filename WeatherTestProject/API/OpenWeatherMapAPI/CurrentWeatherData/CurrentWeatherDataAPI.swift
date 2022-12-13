@@ -44,18 +44,18 @@ class CurrentWeatherDataAPI: ObservableObject {
         
         guard let request = createRequest(queryItems) else { throw NetworkError.badURL }
         
-        debugPrint(#function, request)
+        debugPrint(#function, "request: ", request)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
-        debugPrint(#function, data)
+        debugPrint(#function, name, data)
         
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode else { throw NetworkError.noData }
         guard (200 ... 299) ~= statusCode else { throw NetworkError.noData }
         
         guard let jsonData = try? JSONDecoder().decode(CurrentWeatherModel.self, from: data) else { throw NetworkError.decodingError }
         
-        debugPrint(#function, jsonData)
+//        debugPrint(#function, jsonData)
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
@@ -79,11 +79,11 @@ class CurrentWeatherDataAPI: ObservableObject {
         
         guard let request = createRequest(queryItems) else { throw NetworkError.badURL }
         
-        debugPrint(#function, request)
+//        debugPrint(#function, request)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
-        debugPrint(#function, data)
+        debugPrint(#function, name, data)
         
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode else { throw NetworkError.noData }
         guard (200 ... 299) ~= statusCode else { throw NetworkError.noData }
@@ -91,7 +91,7 @@ class CurrentWeatherDataAPI: ObservableObject {
         do {
             let jsonData = try JSONDecoder().decode(CurrentWeatherModel.self, from: data)
             
-            print(#function, "jsonData", jsonData)
+//            print(#function, "jsonData", jsonData)
             
             return jsonData
             

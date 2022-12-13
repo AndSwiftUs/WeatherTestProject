@@ -10,16 +10,54 @@ import SwiftUI
 struct DailyForecastView: View {
     
     var city: String
+    @StateObject private var vmOWM = FiveDayForecastAPI()
+    @State private var fiveDayForecast = FiveDayForecastModel()
+    var morning = 0
+    var night = 0
     
     var body: some View {
         
-        ScrollView(.vertical) {
-            
-            LazyVStack(spacing: 20) {
-                ForEach(0 ..< 6) { item in
-                    Image(systemName: "\(item).circle")
-                        .font(.title)
+        ZStack {
+            VStack(spacing: 8) {
+                ForEach(fiveDayForecast.buff!) { item in
+                    
+                    if dtToHour(dt: item.dt!, format: "HH") == "12" {
+                        
+                        HStack {
+                            
+                            Text(dtToHour(dt: item.dt!, format: "EEEE"))
+                                .font(.system(size: 20, weight: .regular))
+                            
+                            Spacer()
+                            
+                            imageFromIconB(icon: item.weather?.first?.icon ?? "bad icon")
+                                .frame(maxWidth: 30)
+                            
+                            Text("\(lround((item.rain?.r3h ?? 0.0)*100), specifier: "%.2d")%")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(Color(hex: "#7CCFF9"))
+                                .opacity(((item.rain?.r3h) != nil) ? 1 : 0)
+                                .frame(maxWidth: 64, alignment: .leading)
+                            
+                            HStack {
+                                Text("\(lround((item.main?.tempMax)!))º")
+                                    .font(.system(size: 20, weight: .medium))
+                                    .frame(width: 45, alignment: .trailing)
+                                Text("\(lround((item.main?.tempMin)!))º")
+                                    .font(.system(size: 20, weight: .medium))
+                                    .opacity(0.5)
+                                    .frame(width: 45, alignment: .trailing)
+                            }
+                            .frame(width: 90)
+                        }
+                    }
                 }
+            }
+        }
+        .padding(.horizontal)
+        .task {
+            Task {
+                fiveDayForecast = try await vmOWM.fiveDay3HourForecats(name: city)
             }
         }
     }
@@ -27,6 +65,6 @@ struct DailyForecastView: View {
 
 struct DailyForecastView_Previews: PreviewProvider {
     static var previews: some View {
-        DailyForecastView(city: "Minsk")
+        DailyForecastView(city: "Bucharest")
     }
 }

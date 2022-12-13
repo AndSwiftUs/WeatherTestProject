@@ -15,7 +15,7 @@ struct CityListView: View {
     @ObservedObject private var vmWeather = NinjaWeatherAPI()
     @ObservedObject private var vmOWM = CurrentWeatherDataAPI()
     
-    @State private var time = "12:12"
+    @State private var time = ""
     @State private var picture = "⛄︎"
     @State private var temperature = 0
     
@@ -23,23 +23,24 @@ struct CityListView: View {
         HStack {
             VStack(alignment: .leading) {
                 Text(time)
-                Text(city).font(.title)
+                    .font(.system(size: 15, weight: .regular))
+                Text(city)
+                    .font(.system(size: 25, weight: .medium))
             }
-            Spacer()
-
-// пока для разработки просто картинка, чтобы не нагружать API
-            AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(picture)@2x.png"))
-//            Image("10n")
-//                .frame(width: 40, height: 40)
             
-            Spacer().frame(width: 30)
+            Spacer()
+            
+            //            AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(picture)@2x.png"))
+            imageFromIconA(icon: picture)
+                .frame(maxWidth: 60)
+                        
             Text("\(temperature)º")
-                .font(.title)
-                .frame(width: 58)
+                .font(.system(size: 50, weight: .thin))
+                .frame(maxWidth: 96, alignment: .trailing)
         } // end of HStack
         .task {
             Task {
-//                time = try await vmTime.whatTimeInCity(name: city)
+                //                time = try await vmTime.whatTimeInCity(name: city)
                 (temperature, picture, time) = try await vmOWM.weatherTemperaturePictureTimeZone(name: city)
             }
             

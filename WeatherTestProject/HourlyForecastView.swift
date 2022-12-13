@@ -15,19 +15,19 @@ struct TimeView: View {
     
     var body: some View {
         
-        VStack(spacing: 10) {
+        VStack(spacing: 8) {
             if time != nil {
-                Text(dtToHour(dt: time!, format: "HHa")).font(.caption)
+                Text(dtToHour(dt: time!, format: "HHa"))
+                    .font(.system(size: 15, weight: .semibold))
             } else {
-                Text("Now").font(.caption)
+                Text("Now")
+                    .font(.system(size: 15, weight: .semibold))
             }
             
-            // пока для разработки просто картинка, чтобы не нагружать API
-            AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png"))
-                .scaledToFit()
-                .frame(width: 40, height: 40)
-            //            Image("10n")
-            Text("\(lround(degree))º").font(.title)
+            imageFromIconB(icon: icon)
+            
+            Text("\(lround(degree))º")
+                .font(.system(size: 20, weight: .medium))
         }
     }
 }
@@ -49,12 +49,12 @@ struct HourlyForecastView: View {
                              degree: (item.main?.temp)!
                     )
                 }
-            }
+            }.padding(.horizontal, 20)
         }
         .scrollIndicators(.hidden)
         .task {
             Task {
-                try await self.vmOWM.reload(name: city)
+                try await self.vmOWM.reloadFiveDayForecasBuffer(name: city)
                 self.vmOWM.buffer[0].dt = nil // nil == "Now"
             }
         }

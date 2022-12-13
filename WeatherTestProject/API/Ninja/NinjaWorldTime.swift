@@ -87,28 +87,28 @@ class NinjaWorldTimeAPI: ObservableObject {
         
         let queryItems = [URLQueryItem(name: "city", value: name)]
         
-        debugPrint(#function, queryItems)
+//        debugPrint(#function, queryItems)
         
         guard var request = createRequest(queryItems) else { throw URLError(.badURL) }
         
         request.setValue(ninjaAPIKey, forHTTPHeaderField: "X-Api-Key")
         
-        debugPrint(#function, request)
+//        debugPrint(#function, request)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode else { throw URLError(.badServerResponse) }
         guard (200 ... 299) ~= statusCode else { throw URLError(.cannotParseResponse) }
         
-        debugPrint(#function, statusCode)
+//        debugPrint(#function, statusCode)
         
         let jsonNinjaWorldTime = try! JSONDecoder().decode(NinjaWorldTime.self, from: data)
-        
-        debugPrint(#function, jsonNinjaWorldTime)
-        
+                
         if (jsonNinjaWorldTime.hour != nil) {
             time = jsonNinjaWorldTime.hour! + ":" + jsonNinjaWorldTime.minute!
         }
+        
+        debugPrint(#function, name, time)
         
         return time
     }
