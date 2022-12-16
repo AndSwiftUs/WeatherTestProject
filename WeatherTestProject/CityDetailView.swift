@@ -22,25 +22,57 @@ struct CityDetailView: View {
     @State private var weatherDescription = "no description"
     @State private var sunRise = 0
     @State private var sunSet = 0
-    @State private var pressure = 0
+    @State private var pressure = 1025
     @State private var humidity = 0
     @State private var wind = 0
     @State private var feelLike = 0
+    @State private var precipitation = 0
+    @State private var chanceOfRain = 0
+    @State private var visibility = 12
+    @State private var uvIndex = 0
     
     @ViewBuilder
-    var CityDetailHeaderView: some View {
+    func CityDetailHeaderView() -> some View {
         
-        VStack {
-            Text("\(temperature)º")
-                .font(.system(size: 96, weight: .thin))
-            Text("\(weatherDescription)")
-                .font(.system(size: 20, weight: .medium))
+        GeometryReader { proxy in
             
-            HStack(alignment: .top) {
-                Text("H: \(hTemperature) ")
-                Text("L: \(lTemperature)")
+            let minY = proxy.frame(in: .named("SCROLL")).minY
+            
+            switch minY {
+                
+            case 0...140:
+                VStack {
+                    Text("\(city)")
+                        .font(.system(size: 34, weight: .regular))
+                    Text("\(temperature)º")
+                        .font(.system(size: 96 + 45 - minY, weight: .thin))
+                    Text("\(weatherDescription)")
+                        .font(.system(size: 20, weight: .medium))
+                    
+                    HStack(alignment: .top) {
+                        Text("H: \(hTemperature) ")
+                        Text("L: \(lTemperature)")
+                    }
+                    .font(.system(size: 20, weight: .regular))
+                }
+                .frame(maxWidth: .infinity, alignment: .top)
+                .offset(y: -minY)
+                .frame(height: 300)
+                
+            case 140...1000:
+                VStack {
+                    Text("\(city)")
+                        .font(.system(size: 34, weight: .regular))
+                    HStack {
+                        Text("\(temperature)º | ")
+                        Text("\(weatherDescription)")
+                    }
+                    .font(.system(size: 20, weight: .regular))
+                }
+                .frame(maxWidth: .infinity, alignment: .top)
+                .offset(y: -36)
+            default: Image(systemName: "exclamationmark.icloud")
             }
-            .font(.system(size: 20, weight: .regular))
         }
     }
     
@@ -78,11 +110,11 @@ struct CityDetailView: View {
                 
                 Section(header: ExDivider().padding(.horizontal) ) {
                     VStack {
-                        Text("PRESSURE")
+                        Text("CHANCE OF RAIN")
                             .font(.system(size: 13, weight: .regular))
                             .opacity(0.5)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                        Text("\(pressure)")
+                        Text("\(chanceOfRain) %")
                             .font(.system(size: 28, weight: .regular))
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
@@ -119,51 +151,96 @@ struct CityDetailView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
+                
+                Section(header: ExDivider().padding(.horizontal) ) {
+                    VStack {
+                        Text("PRECIPITATION")
+                            .font(.system(size: 13, weight: .regular))
+                            .opacity(0.5)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("\(precipitation) cm")
+                            .font(.system(size: 28, weight: .regular))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.leading, 20)
+                    
+                    VStack {
+                        Text("PRESSURE")
+                            .font(.system(size: 13, weight: .regular))
+                            .opacity(0.5)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("\(pressure) hPa")
+                            .font(.system(size: 28, weight: .regular))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+                
+                Section(header: ExDivider().padding(.horizontal) ) {
+                    VStack {
+                        Text("VISIBILITY")
+                            .font(.system(size: 13, weight: .regular))
+                            .opacity(0.5)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("\(visibility) km")
+                            .font(.system(size: 28, weight: .regular))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.leading, 20)
+                    
+                    VStack {
+                        Text("UV INDEX")
+                            .font(.system(size: 13, weight: .regular))
+                            .opacity(0.5)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text("\(uvIndex)")
+                            .font(.system(size: 28, weight: .regular))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
             }
         }
     }
     
     var body: some View {
+        
         ZStack {
             Color(hex: "3F84DD")
                 .ignoresSafeArea()
             
             NavigationStack {
                 
-                HStack {
-                    Button {
-                        presentationMode.wrappedValue.dismiss()
-                    } label: {
-                        Image("IconBack-1a")
+                ScrollView(.vertical, showsIndicators: false) {
+                    
+                    LazyVGrid(columns: [GridItem()], pinnedViews: .sectionHeaders) {
+                        
+                        Section(header: CityDetailHeaderView().padding(.top, 45) ) {
+                            
+                            Spacer()
+                                .frame(minHeight: 320)
+                            
+                            ExDivider()
+                            
+                            HourlyForecastView(city: city)
+                            
+                            ExDivider()
+                            
+                            DailyForecastView(city: city)
+                            
+                            ExDivider()
+                            
+                            WeatherConditionView
+                            
+                            ExDivider()
+                            
+                        }
                     }
-                    Spacer()
-                }.padding()
-                
-                Text("\(city)")
-                    .font(.custom("SF Pro Display", fixedSize: 34))
-                
-                CityDetailHeaderView
-                
-                ScrollView(showsIndicators: false) {
-                    
-                    Spacer()
-                        .frame(minHeight: 96)
-                    
-                    ExDivider()
-                    
-                    HourlyForecastView(city: city)
-                    
-                    ExDivider()
-                    
-                    DailyForecastView(city: city)
-                    
-                    ExDivider()
-                    
-                    WeatherConditionView
+                    .coordinateSpace(name: "SCROLL")
                 }
                 .navigationBarHidden(true)
+                .navigationBarBackButtonHidden(true)
+                .navigationBarTitleDisplayMode(.inline)
             }
-        }
+        } // end Zstack
         .task {
             Task {
                 currentWeater = try await vmOWM.currentWeather(name: city)
@@ -179,8 +256,16 @@ struct CityDetailView: View {
                 feelLike = lround((currentWeater.main?.feelsLike)!)
             }
         }
+        .overlay {
+            Button {
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Image("IconBack-1a")
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .padding()
+        }
     }
-    
 }
 
 struct CityDetailView_Previews: PreviewProvider {
