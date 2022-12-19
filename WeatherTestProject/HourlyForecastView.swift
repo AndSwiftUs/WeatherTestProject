@@ -36,6 +36,9 @@ struct HourlyForecastView: View {
     
     var city: String
     
+    @AppStorage("cityNameByLocation") var cityNameByLocation: String = "My location"
+    @AppStorage("isAccessToLocation") var isAccessToLocation: Bool = false
+    
     @StateObject private var vmOWM = FiveDayForecastAPI()
     
     var body: some View {
@@ -54,7 +57,7 @@ struct HourlyForecastView: View {
         .scrollIndicators(.hidden)
         .task {
             Task {
-                try await self.vmOWM.reloadFiveDayForecasBuffer(name: city)
+                try await self.vmOWM.reloadFiveDayForecasBuffer(name: city != "My location" ? city : cityNameByLocation)
                 self.vmOWM.buffer[0].dt = nil // nil == "Now"
             }
         }

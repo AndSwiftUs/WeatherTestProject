@@ -9,12 +9,15 @@ import SwiftUI
 
 struct CityDetailView: View {
     
-    var city: String
+    @State var city: String
     
     @Environment(\.presentationMode) var presentationMode
     
     @ObservedObject private var vmOWM = CurrentWeatherDataAPI()
     @State private var currentWeater = CurrentWeatherModel()
+    
+    @AppStorage("cityNameByLocation") var cityNameByLocation: String = "My location"
+    @AppStorage("isAccessToLocation") var isAccessToLocation: Bool = false
     
     @State private var temperature = 0
     @State private var hTemperature = 0
@@ -42,7 +45,7 @@ struct CityDetailView: View {
                 
             case 0...140:
                 VStack {
-                    Text("\(city)")
+                    Text("\(city != "My location" ? city : cityNameByLocation)")
                         .font(.system(size: 34, weight: .regular))
                     Text("\(temperature)º")
                         .font(.system(size: 96 + 45 - minY, weight: .thin))
@@ -61,7 +64,7 @@ struct CityDetailView: View {
                 
             case 140...1000:
                 VStack {
-                    Text("\(city)")
+                    Text("\(city  != "My location" ? city : cityNameByLocation)")
                         .font(.system(size: 34, weight: .regular))
                     HStack {
                         Text("\(temperature)º | ")
@@ -209,41 +212,53 @@ struct CityDetailView: View {
             
             NavigationStack {
                 
-                ScrollView(.vertical, showsIndicators: false) {
+                if isAccessToLocation {
                     
-                    LazyVGrid(columns: [GridItem()], pinnedViews: .sectionHeaders) {
+                    ScrollView(.vertical, showsIndicators: false) {
                         
-                        Section(header: CityDetailHeaderView().padding(.top, 45) ) {
+                        LazyVGrid(columns: [GridItem()], pinnedViews: .sectionHeaders) {
                             
-                            Spacer()
-                                .frame(minHeight: 320)
-                            
-                            ExDivider()
-                            
-                            HourlyForecastView(city: city)
-                            
-                            ExDivider()
-                            
-                            DailyForecastView(city: city)
-                            
-                            ExDivider()
-                            
-                            WeatherConditionView
-                            
-                            ExDivider()
-                            
+                            Section(header: CityDetailHeaderView().padding(.top, 45) ) {
+                                
+                                Spacer()
+                                    .frame(minHeight: 320)
+                                
+                                ExDivider()
+                                
+                                HourlyForecastView(city: city)
+                                
+                                ExDivider()
+                                
+                                DailyForecastView(city: city)
+                                
+                                ExDivider()
+                                
+                                WeatherConditionView
+                                
+                                ExDivider()
+                                
+                            }
                         }
+                        .coordinateSpace(name: "SCROLL")
                     }
-                    .coordinateSpace(name: "SCROLL")
+                    .navigationBarHidden(true)
+                    .navigationBarBackButtonHidden(true)
+                    .navigationBarTitleDisplayMode(.inline)
+                } else {
+                    Text("Sorry!\nNo access to location.")
+                        .navigationBarHidden(true)
+                        .navigationBarBackButtonHidden(true)
+                        .navigationBarTitleDisplayMode(.inline)
                 }
-                .navigationBarHidden(true)
-                .navigationBarBackButtonHidden(true)
-                .navigationBarTitleDisplayMode(.inline)
             }
         } // end Zstack
         .task {
             Task {
-                currentWeater = try await vmOWM.currentWeather(name: city)
+                if city != "My location" {
+                    currentWeater = try await vmOWM.currentWeatherByName(name: city)
+                } else {
+                    currentWeater = try await vmOWM.currentWeatherByName(name: cityNameByLocation)
+                }
                 temperature = lround((currentWeater.main?.temp)!)
                 hTemperature = lround((currentWeater.main?.tempMax)!)
                 lTemperature = lround((currentWeater.main?.tempMin)!)

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-let defaultCities = ["Warsaw","Bucharest","Minsk","Budapest","Munich","Santa Cruz de la Sierra","Porto Alegre","Palermo","Bremen","Florence"]
+let defaultCities = ["My location", "Warsaw","Bucharest","Minsk","Budapest","Munich","Santa Cruz de la Sierra","Porto Alegre","Palermo","Bremen","Florence"]
 
 let openWeatherMapAPIKey = "7ab137f9295d4c0489e4008bf490451e"
 
@@ -34,9 +34,9 @@ func imageFromIconB(icon: String) -> Image {
     case "50d", "50n": return Image("IconWeather-5b")
     case "10d", "10n": return Image("IconWeather-4b")
     case "13d", "13n": return Image("IconWeather-6b")
-
+        
     default:
-//        AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png"))
+        //        AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png"))
         return Image(systemName: "sos.circle")
     }
 }
@@ -50,9 +50,9 @@ func imageFromIconA(icon: String) -> Image {
     case "50d", "50n": return Image("IconWeather-5a")
     case "10d", "10n": return Image("IconWeather-4a")
     case "13d", "13n": return Image("IconWeather-6a")
-
+        
     default:
-//        AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png"))
+        //        AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(icon)@2x.png"))
         return Image(systemName: "sos.circle")
     }
 }

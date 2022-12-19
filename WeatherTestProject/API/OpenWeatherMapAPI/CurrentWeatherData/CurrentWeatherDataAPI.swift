@@ -32,9 +32,9 @@ class CurrentWeatherDataAPI: ObservableObject {
     }
     
     func weatherTemperaturePictureTimeZone(name: String) async throws -> (Int, String, String) {
- 
+        
         // for develop and debug
-//        return (-10, "10n", "20:20")
+        //        return (-10, "10n", "20:20")
         
         let queryItems = [
             URLQueryItem(name: "q", value: name),
@@ -55,7 +55,7 @@ class CurrentWeatherDataAPI: ObservableObject {
         
         guard let jsonData = try? JSONDecoder().decode(CurrentWeatherModel.self, from: data) else { throw NetworkError.decodingError }
         
-//        debugPrint(#function, jsonData)
+        //        debugPrint(#function, jsonData)
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
@@ -69,8 +69,8 @@ class CurrentWeatherDataAPI: ObservableObject {
         )
     }
     
-    func currentWeather(name: String) async throws -> CurrentWeatherModel {
- 
+    func currentWeatherByName(name: String) async throws -> CurrentWeatherModel {
+        
         let queryItems = [
             URLQueryItem(name: "q", value: name),
             URLQueryItem(name: "units", value: "metric"),
@@ -79,7 +79,7 @@ class CurrentWeatherDataAPI: ObservableObject {
         
         guard let request = createRequest(queryItems) else { throw NetworkError.badURL }
         
-//        debugPrint(#function, request)
+        //        debugPrint(#function, request)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
@@ -91,7 +91,7 @@ class CurrentWeatherDataAPI: ObservableObject {
         do {
             let jsonData = try JSONDecoder().decode(CurrentWeatherModel.self, from: data)
             
-//            print(#function, "jsonData", jsonData)
+            //            print(#function, "jsonData", jsonData)
             
             return jsonData
             
@@ -99,54 +99,42 @@ class CurrentWeatherDataAPI: ObservableObject {
             print(error)
             fatalError(error.localizedDescription)
         }
-    
+        
     }
-
+    
+    func currentWeatherByLocation(lat: String, lon: String) async throws -> CurrentWeatherModel {
+        
+        let queryItems = [
+            URLQueryItem(name: "lat", value: lat),
+            URLQueryItem(name: "lon", value: lon),
+            URLQueryItem(name: "units", value: "metric"),
+            URLQueryItem(name: "appid", value: openWeatherMapAPIKey)
+        ]
+        
+        guard let request = createRequest(queryItems) else { throw NetworkError.badURL }
+        
+        //        debugPrint(#function, request)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        debugPrint(#function, lat, lon, data)
+        
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode else { throw NetworkError.noData }
+        guard (200 ... 299) ~= statusCode else { throw NetworkError.noData }
+        
+        do {
+            let jsonData = try JSONDecoder().decode(CurrentWeatherModel.self, from: data)
+            
+            //            print(#function, "jsonData", jsonData)
+            
+            return jsonData
+            
+        } catch {
+            print(error)
+            fatalError(error.localizedDescription)
+        }
+        
+    }
 }
 
-/* https://api.openweathermap.org/data/2.5/weather?q=London&appid={API key}
- 
- {
- "coord": {
- "lon": -0.13,
- "lat": 51.51
- },
- "weather": [
- {
- "id": 300,
- "main": "Drizzle",
- "description": "light intensity drizzle",
- "icon": "09d"
- }
- ],
- "base": "stations",
- "main": {
- "temp": 280.32,
- "pressure": 1012,
- "humidity": 81,
- "temp_min": 279.15,
- "temp_max": 281.15
- },
- "visibility": 10000,
- "wind": {
- "speed": 4.1,
- "deg": 80
- },
- "clouds": {
- "all": 90
- },
- "dt": 1485789600,
- "sys": {
- "type": 1,
- "id": 5091,
- "message": 0.0103,
- "country": "GB",
- "sunrise": 1485762037,
- "sunset": 1485794875
- },
- "id": 2643743,
- "name": "London",
- "cod": 200
- }
- */
-
+// https://api.openweathermap.org/data/2.5/weather?q=London&appid={API key}

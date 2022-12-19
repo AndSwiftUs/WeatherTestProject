@@ -9,8 +9,18 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @AppStorage("cityNameByLocation") var cityNameByLocation: String = "My location"
+    @AppStorage("isAccessToLocation") var isAccessToLocation: Bool = false
+    
+    @StateObject var locationManager = LocationManager()
+    var userLatitude: String { "\(locationManager.lastLocation?.coordinate.latitude ?? 0)" }
+    var userLongitude: String { "\(locationManager.lastLocation?.coordinate.longitude ?? 0)" }
+    
     @State private var searchText = ""
     @State private var cities = defaultCities
+    
+    @ObservedObject private var vmOWM = CurrentWeatherDataAPI()
+    @State private var currentWeater = CurrentWeatherModel()
     
     var body: some View {
         NavigationStack {
@@ -18,9 +28,9 @@ struct ContentView: View {
                 ZStack(alignment: .leading) {
                     NavigationLink(destination: CityDetailView(city: city)) { EmptyView() }.opacity(0)
                     CityListView(city: city)
-                } //end of ZStack
+                }
                 .listRowSeparator(.hidden)
-            } // end of List
+            }
             .listStyle(.plain)
             .navigationTitle("Weather")
             .searchable(text: $searchText, prompt: "City name")
@@ -32,6 +42,13 @@ struct ContentView: View {
                 }
             }
             .preferredColorScheme(.dark)
+            .task {
+                Task {
+                    currentWeater = try await vmOWM.currentWeatherByLocation(lat: userLatitude, lon: userLongitude)
+                    cityNameByLocation = currentWeater.name ?? "\(userLatitude),\(userLongitude)"
+                    isAccessToLocation = (locationManager.statusString == "authorizedWhenInUse")
+                }
+            }
         }
     }
 }

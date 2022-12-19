@@ -10,11 +10,13 @@ import SwiftUI
 struct DailyForecastView: View {
     
     var city: String
+    
+    @AppStorage("cityNameByLocation") var cityNameByLocation: String = "My location"
+    @AppStorage("isAccessToLocation") var isAccessToLocation: Bool = false
+    
     @StateObject private var vmOWM = FiveDayForecastAPI()
     @State private var fiveDayForecast = FiveDayForecastModel()
-    var morning = 0
-    var night = 0
-    
+        
     var body: some View {
         
         ZStack {
@@ -57,7 +59,7 @@ struct DailyForecastView: View {
         .padding(.horizontal)
         .task {
             Task {
-                fiveDayForecast = try await vmOWM.fiveDay3HourForecats(name: city)
+                fiveDayForecast = try await vmOWM.fiveDay3HourForecats(name: city != "My location" ? city : cityNameByLocation)
             }
         }
     }
