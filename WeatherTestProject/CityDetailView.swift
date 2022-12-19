@@ -212,7 +212,7 @@ struct CityDetailView: View {
             
             NavigationStack {
                 
-                if isAccessToLocation {
+                if isAccessToLocation  || city != "My location" {
                     
                     ScrollView(.vertical, showsIndicators: false) {
                         
