@@ -280,6 +280,9 @@ struct CityDetailView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding()
         }
+        .onBackSwipe {
+            presentationMode.wrappedValue.dismiss()
+        }
     }
 }
 

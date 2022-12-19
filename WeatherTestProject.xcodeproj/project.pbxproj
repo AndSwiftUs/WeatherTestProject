@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DC1009D9294FA1DE005B614E /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1009D8294FA1DE005B614E /* LocationManager.swift */; };
+		DC1009DD295055D7005B614E /* View+Extention.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1009DC295055D7005B614E /* View+Extention.swift */; };
 		DC51C8722941CFAA00ECFF6C /* CityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC51C8712941CFAA00ECFF6C /* CityListView.swift */; };
 		DC51C8802942160500ECFF6C /* CurrentWeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC51C8792942160500ECFF6C /* CurrentWeatherModel.swift */; };
 		DC66A6702940CCC200B8F1D6 /* WeatherTestProjectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC66A66F2940CCC200B8F1D6 /* WeatherTestProjectApp.swift */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		DC1009D8294FA1DE005B614E /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		DC1009DC295055D7005B614E /* View+Extention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extention.swift"; sourceTree = "<group>"; };
 		DC51C8712941CFAA00ECFF6C /* CityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityListView.swift; sourceTree = "<group>"; };
 		DC51C8732941EB6D00ECFF6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		DC51C8792942160500ECFF6C /* CurrentWeatherModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentWeatherModel.swift; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 				DC51C8732941EB6D00ECFF6C /* Info.plist */,
 				DC66A67D2940CD5C00B8F1D6 /* Constants.swift */,
 				DCB6998529425FBF00F7E257 /* Color+Extention.swift */,
+				DC1009DC295055D7005B614E /* View+Extention.swift */,
 				DC1009D8294FA1DE005B614E /* LocationManager.swift */,
 				DC66A6872941140C00B8F1D6 /* API */,
 				DC66A66F2940CCC200B8F1D6 /* WeatherTestProjectApp.swift */,
@@ -217,6 +220,7 @@
 				DC66A686294113FF00B8F1D6 /* CurrentWeatherDataAPI.swift in Sources */,
 				DC66A6802940D6ED00B8F1D6 /* CityDetailView.swift in Sources */,
 				DC66A67E2940CD5C00B8F1D6 /* Constants.swift in Sources */,
+				DC1009DD295055D7005B614E /* View+Extention.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
