@@ -74,6 +74,7 @@ struct CityDetailView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .top)
                 .offset(y: -36)
+                
             default: Image(systemName: "exclamationmark.icloud")
             }
         }

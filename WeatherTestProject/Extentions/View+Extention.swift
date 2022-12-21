@@ -19,3 +19,16 @@ extension View {
         )
     }
 }
+
+struct ExDivider: View {
+    let color: Color = .white
+    let width: CGFloat = 0.5
+    let opacity: CGFloat = 0.3
+    var body: some View {
+        Rectangle()
+            .fill(color)
+            .frame(height: width)
+            .edgesIgnoringSafeArea(.horizontal)
+            .opacity(opacity)
+    }
+}

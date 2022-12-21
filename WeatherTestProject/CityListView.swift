@@ -79,7 +79,6 @@ struct CityListView: View {
             }
             .task {
                 Task {
-                    //                time = try await vmTime.whatTimeInCity(name: city)
                     (temperature, picture, time) = try await vmOWM.weatherTemperaturePictureTimeZone(name: city)
                 }
                 
