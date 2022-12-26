@@ -43,12 +43,12 @@ struct CityDetailView: View {
             
             switch minY {
                 
-            case 0...140:
+            case 0...280:
                 VStack {
                     Text("\(city != "My location" ? city : cityNameByLocation)")
                         .font(.system(size: 34, weight: .regular))
                     Text("\(temperature)º")
-                        .font(.system(size: 96 + 45 - minY, weight: .thin))
+                        .font(.system(size: 96 + 45 - minY/2, weight: .thin))
                     Text("\(weatherDescription)")
                         .font(.system(size: 20, weight: .medium))
                     
@@ -59,10 +59,10 @@ struct CityDetailView: View {
                     .font(.system(size: 20, weight: .regular))
                 }
                 .frame(maxWidth: .infinity, alignment: .top)
-                .offset(y: -minY)
+                .offset(y: -minY/2)
                 .frame(height: 300)
                 
-            case 140...1000:
+            case 280...1000:
                 VStack {
                     Text("\(city  != "My location" ? city : cityNameByLocation)")
                         .font(.system(size: 34, weight: .regular))
@@ -208,8 +208,13 @@ struct CityDetailView: View {
     var body: some View {
         
         ZStack {
-            Color(hex: "3F84DD")
-                .ignoresSafeArea()
+//            Color(hex: "3F84DD")
+//                .ignoresSafeArea()
+            
+            LinearGradient(colors: [.blue, Color(hex: "3F84DD")],
+                           startPoint: .topLeading,
+                           endPoint: .bottomTrailing)
+                .edgesIgnoringSafeArea(.all)
             
             NavigationStack {
                 
